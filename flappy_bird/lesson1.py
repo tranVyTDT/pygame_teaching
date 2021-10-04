@@ -3,14 +3,14 @@ from pygame.locals import *
 from sys import exit
 
 SCREEN_HEIGHT = 550
-SCREEN_WEIGHT = 288
+SCREEN_WIDTH = 288
 
 
 background_image_filename = r'assets\background-day.png'
 mouse_image_filename = r'assets\yellowbird-midflap.png'
 
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WEIGHT, SCREEN_HEIGHT), 0, 32)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.display.set_caption("Hello, World!")
 
 background = pygame.image.load(background_image_filename).convert()
@@ -23,6 +23,6 @@ while True:
             exit()
 
     screen.blit(background, (0,0))
-    screen.blit(mouse_cursor, (SCREEN_WEIGHT/2, SCREEN_HEIGHT/2))
+    screen.blit(mouse_cursor, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
     pygame.display.update()
