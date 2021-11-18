@@ -18,10 +18,12 @@ ground_scroll = 0
 scroll_speed = 4
 flying = False
 game_over = False
+is_init = True
 
 #load images
 bg = pygame.image.load('assets/background-day.png')
 ground_img = pygame.image.load('assets/base.png')
+init_message = pygame.image.load("assets/message.png")
 
 
 class Bird(pygame.sprite.Sprite):
@@ -109,6 +111,11 @@ while run:
         ground_scroll -= scroll_speed
         if abs(ground_scroll) > 35:
             ground_scroll = 0
+    
+    if is_init:
+        init_message_x = screen_width/2 - init_message.get_width() / 2
+        init_message_y = screen_height/2 - init_message.get_height() / 2
+        screen.blit(init_message, (init_message_x, init_message_y))
 
 
     for event in pygame.event.get():
@@ -116,6 +123,7 @@ while run:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
             flying = True
+            is_init = False
 
     pygame.display.update()
 

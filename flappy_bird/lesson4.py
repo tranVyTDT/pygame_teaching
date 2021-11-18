@@ -32,6 +32,7 @@ ground_img = pygame.image.load('img/ground.png')
 class Bird(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
+        self.jump = pygame.mixer.Sound("sound\sfx_wing.wav")
         self.images = []
         self.index = 0
         self.counter = 0
@@ -58,6 +59,7 @@ class Bird(pygame.sprite.Sprite):
             #jump
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
+                self.jump.play()
                 self.vel = -10
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False

@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.init()
 
 clock = pygame.time.Clock()
-fps = 60
+fps = 30
 
 screen_width = 288
 screen_height = 550
@@ -16,11 +16,20 @@ pygame.display.set_caption('Flappy Bird')
 #define game variables
 ground_scroll = 0
 scroll_speed = 4
+fall_velocity = 1
+is_alive = True
+is_start = False
+is_pressed = False
 
 #load images
 bg = pygame.image.load('assets/background-day.png')
 ground_img = pygame.image.load('assets/base.png')
+message = pygame.image.load('assets/message.png')
 
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self, x ,y):
+        pygame.sprite.Sprite.__init__(self)
+        
 
 class Bird(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -39,6 +48,7 @@ class Bird(pygame.sprite.Sprite):
         self.rect.center = [x, y]
         
     def update(self):
+        global fall_velocity, is_alive, is_pressed
 
         #handle the animation
         self.counter += 1
@@ -51,11 +61,32 @@ class Bird(pygame.sprite.Sprite):
             if self.index >= len(self.images):
                 self.index = 0
                 
-        self.image = self.images[self.index]
+        #self.image = self.images[self.index]
+        if fall_velocity < 0 :
+            self.image = pygame.transform.rotate(self.images[self.index], fall_velocity * -1 * 5)
+        else:
+            self.image = pygame.transform.rotate(self.images[self.index], fall_velocity * -1 * 3)
+
+        # handle gravity
+        self.rect.y += fall_velocity
+        
+        fall_velocity += 0.8
+        if fall_velocity > 6 : fall_velocity = 6
+        
+        if self.rect.y > 485: 
+            is_alive = False
+        
+        if pygame.mouse.get_pressed() == (1, 0, 0) and not is_pressed :
+            fall_velocity = -5
+            is_pressed = True
+        
+        if pygame.mouse.get_pressed()[0] == 0 : is_pressed = False
+
+
 
 bird_group = pygame.sprite.Group()
 
-flappy = Bird(100, int(screen_height / 2))
+flappy = Bird(100, int(screen_height / 5))
 bird_group.add(flappy)
 
 
@@ -63,26 +94,35 @@ bird_group.add(flappy)
 run = True
 while run:
 
-    clock.tick(fps)
-
-    #draw background
-    screen.blit(bg, (0,0))
-
-    bird_group.draw(screen)
-    bird_group.update()
-
     #draw and scroll the ground
-    screen.blit(ground_img, (ground_scroll, 500))
-    ground_scroll -= scroll_speed
+    if is_alive:
+        screen.blit(bg, (0,0))
+       
+        if not is_start :
+            message_x = screen_width / 2 - message.get_width() / 2
+            message_y = screen_height / 2 - message.get_height() / 2
+            screen.blit(message, (message_x, message_y))
 
-    if abs(ground_scroll) > 35:
-        ground_scroll = 0
+        
+
+        if is_start:
+            bird_group.draw(screen)
+            bird_group.update()
+
+            ground_scroll -= scroll_speed
+
+            if abs(ground_scroll) > 35:
+                ground_scroll = 0
+
+        screen.blit(ground_img, (ground_scroll, 500))
 
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            is_start = True
 
     pygame.display.update()
-
+    clock.tick(fps)
 pygame.quit()

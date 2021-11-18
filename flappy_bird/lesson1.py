@@ -51,6 +51,10 @@ class Bird(pygame.sprite.Sprite):
             
             # change bird image
             self.image = self.animation[self.animation_index] 
+        
+        if pygame.mouse.get_pressed() == (1, 0, 0) :
+            self.rect.y -= 10
+        
         # show the bird on the screen
         screen.blit(self.image, (self.x, self.y))
 
