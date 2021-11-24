@@ -35,6 +35,7 @@ pass_pipe = False
 bg = pygame.image.load('img/bg.png')
 ground_img = pygame.image.load('img/ground.png')
 button_img = pygame.image.load('img/restart.png')
+init_message = pygame.image.load("assets/message.png")
 
 
 def draw_text(text, font, text_col, x, y):
@@ -226,6 +227,11 @@ while run:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
             flying = True
+
+    if not flying and not game_over:
+        init_message_x = screen_width/2 - init_message.get_width() / 2
+        init_message_y = screen_height/2 - init_message.get_height() / 2
+        screen.blit(init_message, (init_message_x, init_message_y))
 
     pygame.display.update()
 
