@@ -16,7 +16,7 @@ class Game:
 
     def load_data(self):
         game_folder = path.dirname(__file__)
-        self.map = Map(path.join(game_folder, 'map.txt'))
+        self.map = Map(path.join(game_folder, 'map2.txt'))
 
     def new(self):
         # initialize all variables and do all the setup for a new game
