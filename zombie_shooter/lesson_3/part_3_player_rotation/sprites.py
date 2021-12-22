@@ -33,29 +33,31 @@ class Player(pg.sprite.Sprite):
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
                 if self.vel.x > 0:
-                    self.pos.x = hits[0].rect.left - self.rect.width
+                    self.pos.x = hits[0].rect.left - self.rect.width / 2
                 if self.vel.x < 0:
-                    self.pos.x = hits[0].rect.right
+                    self.pos.x = hits[0].rect.right + self.rect.width / 2
                 self.vel.x = 0
-                self.rect.x = self.pos.x
+                self.rect.centerx = self.pos.x
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
                 if self.vel.y > 0:
-                    self.pos.y = hits[0].rect.top - self.rect.height
+                    self.pos.y = hits[0].rect.top - self.rect.height / 2
                 if self.vel.y < 0:
-                    self.pos.y = hits[0].rect.bottom
+                    self.pos.y = hits[0].rect.bottom + self.rect.height / 2
                 self.vel.y = 0
-                self.rect.y = self.pos.y
+                self.rect.centery = self.pos.y
 
     def update(self):
         self.get_keys()
         self.rot = (self.rot + self.rot_speed + self.game.dt) % 360
         self.image = pg.transform.rotate(self.game.player_img, self.rot)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
-        self.rect.x = self.pos.x
+        self.rect.centerx = self.pos.x
         self.collide_with_walls('x')
-        self.rect.y = self.pos.y
+        self.rect.centery = self.pos.y
         self.collide_with_walls('y')
 
 
