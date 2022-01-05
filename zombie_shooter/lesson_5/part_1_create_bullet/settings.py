@@ -36,7 +36,7 @@ MOD_SPEED = 150
 MOD_HIT_RECT = pg.Rect(0, 0, 30, 30)
 
 # gun settings
-BULLET_IMG = r'PNG\Tiles\tile_187.png'
+BULLET_IMG = r'PNG\bullet.png'
 BULLET_SPEED = 600
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
