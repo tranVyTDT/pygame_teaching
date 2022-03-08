@@ -1,0 +1,15 @@
+
+
+LIGHT_GRAY = (100, 100, 100)
+DARK_GRAY = (40, 40, 40)
+YELLOW = (248, 255, 59)
+
+
+# game settings
+WIDTH = 1024
+HEIGHT = 768
+BGCOLOR = DARK_GRAY
+
+TITLE = 'zombie shooter'
+FPS = 60
+TILESIZE = 32

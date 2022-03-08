@@ -5,10 +5,27 @@ from settings import *
 from sprites import *
 from tilemap import *
 
+def draw_player_health(surf, x, y, pct):
+    if pct < 0:
+        pct = 0
+    BAR_LENGTH = 100
+    BAR_HEIGHT = 20
+    fill = pct * BAR_LENGTH
+    outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+    fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+    if pct > 0.6:
+        col = GREEN
+    elif pct > 0.3:
+        col = YELLOW
+    else:
+        col = RED
+    pg.draw.rect(surf, col, fill_rect)
+    pg.draw.rect(surf, WHITE, outline_rect, 2)
+
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
@@ -19,15 +36,24 @@ class Game:
         assets_folder = path.join(game_folder, '../../assets')
         self.map = Map(path.join(game_folder, 'map3.txt'))
         self.player_img = pg.image.load(path.join(assets_folder, PLAYER_IMG)).convert_alpha()
+        self.bullet_img = pg.image.load(path.join(assets_folder, BULLET_IMG)).convert_alpha()
+        self.mob_img = pg.image.load(path.join(assets_folder, MOB_IMG)).convert_alpha()
+        self.wall_img = pg.image.load(path.join(assets_folder, WALL_IMG)).convert_alpha()
+        self.wall_img = pg.transform.scale(self.wall_img, (TILESIZE, TILESIZE))
+
 
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
+        self.bullets = pg.sprite.Group()
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
                     Wall(self, col, row)
+                if tile == 'M':
+                    Mob(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
         self.camera = Camera(self.map.width, self.map.height)
@@ -49,6 +75,22 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
+        # zombie hit player
+        hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_rect)
+        for hit in hits:
+            self.player.health -= MOB_DAMAGE
+            hit.vec = vec(0, 0) # làm zombie khựng lại
+            if self.player.health <= 0:
+                self.playing = False
+        if hits: # player sẽ bị đẩy ra 1 xíu khi chạm zombie
+            self.player.pos += vec(MOB_KNOCKBACK, 0).rotate(-hits[0].rot)
+
+        # bullet collide mobs
+        zombies = pg.sprite.groupcollide(self.mobs, self.bullets, False, True) 
+        for zombie in zombies:
+            zombie.health -= BULLET_DAMAGE
+            zombie.vec = vec(0, 0)
+
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -61,7 +103,10 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         for sprite in self.all_sprites:
+            if isinstance(sprite, Mob):
+                sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        draw_player_health(self.screen, 10, 10, self.player.health / PLAYER_HEALTH)
         pg.display.flip()
 
 
