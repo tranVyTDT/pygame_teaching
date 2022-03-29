@@ -32,7 +32,7 @@ white = (255, 255, 255)
 
 #define game variables
 ground_scroll = 0
-scroll_speed = 4
+scroll_speed = 8
 flying = False
 game_over = False
 pipe_gap = 150
@@ -46,7 +46,7 @@ high_score_name = 'no one'
 
 
 #load images
-bg = pygame.image.load('img/bg.png')
+bg = pygame.image.load('img/bg-night.png')
 ground_img = pygame.image.load('img/ground.png')
 button_img = pygame.image.load('img/restart.png')
 init_message = pygame.image.load("assets/message.png")
@@ -91,8 +91,8 @@ class Bird(pygame.sprite.Sprite):
         self.images = []
         self.index = 0
         self.counter = 0
-        for num in range(1, 4):
-            img = pygame.image.load(f'img/bird{num}.png')
+        for num in range(1, 6):
+            img = pygame.image.load(f'img/flyMan{num}.png')
             self.images.append(img)
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
@@ -139,7 +139,7 @@ class Bird(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('img/pipe.png')
+        self.image = pygame.image.load('img/tree.png')
         self.rect = self.image.get_rect()
         #position 1 is from the top, -1 is from the bottom
         if position == 1:
@@ -147,6 +147,8 @@ class Pipe(pygame.sprite.Sprite):
             self.rect.bottomleft = [x, y - int(pipe_gap / 2)]
         if position == -1:
             self.rect.topleft = [x, y + int(pipe_gap / 2)]
+        if position == 0:
+            self.rect.topleft = [x, y + int(pipe_gap / 2) + 100]
 
     def update(self):
         self.rect.x -= scroll_speed
