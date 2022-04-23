@@ -91,8 +91,8 @@ class Bird(pygame.sprite.Sprite):
         self.images = []
         self.index = 0
         self.counter = 0
-        for num in range(1, 6):
-            img = pygame.image.load(f'img/flyMan{num}.png')
+        for num in range(1, 4):
+            img = pygame.image.load(f'img/bird{num}.png')
             self.images.append(img)
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
@@ -139,7 +139,7 @@ class Bird(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('img/tree.png')
+        self.image = pygame.image.load('img/pipe.png')
         self.rect = self.image.get_rect()
         #position 1 is from the top, -1 is from the bottom
         if position == 1:
@@ -233,7 +233,7 @@ while run:
                 pass_pipe = False
 
 
-    draw_text(str(score), font, white, int(screen_width / 2), 20)
+    draw_text(str(score), font, white, int(screen_width / 2), 100)
 
     #look for collision
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
