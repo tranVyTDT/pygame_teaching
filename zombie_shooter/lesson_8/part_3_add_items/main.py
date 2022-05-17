@@ -60,13 +60,17 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
         
         for tile_object in self.map.tmxdata.objects:
+            obj_center = vec(tile_object.x + tile_object.width / 2,
+                    tile_object.y + tile_object.height / 2)
             if tile_object.name == 'player':
-                self.player = Player(self, tile_object.x, tile_object.y)
+                self.player = Player(self, obj_center.x, obj_center.y)
             if tile_object.name == 'zombie':
-                Mob(self, tile_object.x, tile_object.y)
+                Mob(self, obj_center.x, obj_center.y)
             if tile_object.name == 'wall':
-                Obstacle(self, tile_object.x, tile_object.y,
+                Obstacle(self, obj_center.x, obj_center.y,
                          tile_object.width, tile_object.height)
+            if tile_object.name in ['health']:
+                Item(self, obj_center, tile_object.name)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -85,6 +89,12 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
+        # player hits items
+        hits = pg.sprite.spritecollide(self.player, self.items, False)
+        for hit in hits:
+            if hit.type == 'health' and self.player.health < PLAYER_HEALTH:
+                hit.kill()
+                self.player.add_health(HEALTH_PACK_AMOUNT)
         # zombie hit player
         hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_rect)
         for hit in hits:

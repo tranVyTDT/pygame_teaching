@@ -57,3 +57,4 @@ FLASH_DURATION = 40
 
 
 ITEM_IMAGES = {'health': 'health_pack.png'}
+HEALTH_PACK_AMOUNT = 20
